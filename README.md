@@ -10,10 +10,7 @@ Tạo trang vnyoutube khi **chưa** có người đăng nhập:
 - [ ] $${\large{\color{orange}{\text{Khương}}}}$$ làm navigation bar cho website vnyoutube
 - [ ] $${\large{\color{orange}{\text{Nam}}}}$$ làm
 
-<img src="https://github.com/user-attachments/assets/2dc34017-2a37-45ce-96c0-ca1cbecbbb0a" alt="2025-03-01_11h43_23" width="400"><img src="https://github.com/user-attachments/assets/200244ac-7513-437f-b5b3-7c49e87957c8" alt="2025-03-01_11h43_43" width="400">
+<img src="https://github.com/user-attachments/assets/2dc34017-2a37-45ce-96c0-ca1cbecbbb0a" alt="2025-03-01_11h43_23" width="400">
 
-,nhớ làm cho xong **trang đăng nhập**
-
-
-
+làm trang đăng nhập và đăng ký bằng email
 
