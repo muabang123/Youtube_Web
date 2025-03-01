@@ -6,8 +6,3 @@ Mỗi người phải tự tạo cho mình một ***nhánh riêng*** không đư
 
 Website của chúng ta tên là **youtube**
 
-Tạo trang vnyoutube khi **chưa** có người đăng nhập:
-- [ ] $${\large{\color{orange}{\text{Khương}}}}$$ làm navigation bar cho website vnyoutube
-
-làm trang đăng nhập và đăng ký
-
