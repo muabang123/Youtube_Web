@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lịch sử xem video</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f4f4f4;
+      }
+
+      h1 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 20px;
+      }
+
+      .history-container {
+        width: 90%;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .history-item {
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+        transition: transform 0.3s ease;
+      }
+
+      .history-item:hover {
+        transform: scale(1.05);
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .history-item strong {
+        color: #007bff;
+        font-size: 16px;
+      }
+
+      .history-item p {
+        margin-top: 5px;
+        font-size: 14px;
+        color: #555;
+      }
+
+      .history-item .video-title {
+        font-weight: bold;
+        color: #333;
+        display: block;
+        margin-top: 5px;
+      }
+
+      .history-item .video-link {
+        text-decoration: none;
+        color: #007bff;
+        font-size: 14px;
+      }
+
+      .history-item .video-link:hover {
+        text-decoration: underline;
+      }
+
+      /* Video nhỏ */
+      .history-item video {
+        width: 100%;
+        max-width: 200px; /* Kích thước video nhỏ */
+        height: auto;
+        border-radius: 8px;
+        margin-top: 10px;
+      }
+
+      .back-button {
+        display: block;
+        width: 160px;
+        margin: 30px auto 0;
+        padding: 10px;
+        text-align: center;
+        background-color: #007bff;
+        color: white;
+        border-radius: 5px;
+        text-decoration: none;
+      }
+
+      .back-button:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Lịch sử xem video</h1>
+
+    <div class="history-container">
+      {% if history %}
+        {% for item in history %}
+          <div class="history-item">
+            <span class="video-title">{{ item['title'] }}</span><br />
+            <a href="{{ url_for('watch', video_id=item['video_id']) }}" class="video-link">Xem lại video</a><br />
+
+            <!-- Hiển thị video nhỏ -->
+            <video controls>
+              <source src="{{ url_for('static', filename='video/' + item['filename']) }}" type="video/mp4" />
+              Trình duyệt của bạn không hỗ trợ video.
+            </video>
+
+            <p><strong>Thời gian xem:</strong> {{ item['watch_time'] }}</p>
+            <p><strong>Thời gian đã xem:</strong> {{ item['duration_watched'] }}</p>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p>Chưa có lịch sử xem video.</p>
+      {% endif %}
+    </div>
+
+    <a href="{{ url_for('index') }}" class="back-button">Quay lại trang chủ</a>
+  </body>
+</html>

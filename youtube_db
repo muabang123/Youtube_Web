@@ -1,0 +1,67 @@
+-- 1. Tạo bảng Users
+CREATE TABLE Users (
+    UserID INT AUTO_INCREMENT NOT NULL,
+    Email VARCHAR(255) NOT NULL,
+    PasswordHash VARCHAR(255) NOT NULL,
+    CreatedAt DATETIME NULL,
+    IsActive BOOLEAN NULL,
+    PRIMARY KEY (UserID),
+    UNIQUE (Email)
+) ENGINE=InnoDB;
+
+-- 2. Tạo bảng Video
+CREATE TABLE Video (
+    video_id INT AUTO_INCREMENT NOT NULL,
+    user_id INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT NULL,
+    filename VARCHAR(255) NOT NULL,
+    views INT NULL,
+    upload_date DATETIME NULL,
+    converted_filename VARCHAR(255) NULL,
+    subtitle_filename VARCHAR(255) NULL,
+    PRIMARY KEY (video_id),
+    FOREIGN KEY (user_id) REFERENCES Users(UserID) ON DELETE CASCADE  -- Khóa ngoại tham chiếu tới Users
+) ENGINE=InnoDB;
+
+-- 3. Tạo bảng Comments
+CREATE TABLE Comments (
+    comment_id INT AUTO_INCREMENT NOT NULL,
+    user_id INT NOT NULL,  -- Khóa ngoại tham chiếu tới Users
+    video_id INT NOT NULL, -- Khóa ngoại tham chiếu tới Video
+    comment_text TEXT NOT NULL,
+    comment_date DATETIME NULL,
+    PRIMARY KEY (comment_id),
+    FOREIGN KEY (user_id) REFERENCES Users(UserID) ON DELETE CASCADE,  -- Khóa ngoại tham chiếu tới Users
+    FOREIGN KEY (video_id) REFERENCES Video(video_id) ON DELETE CASCADE -- Khóa ngoại tham chiếu tới Video
+) ENGINE=InnoDB;
+
+-- 4. Tạo bảng Subscriptions
+CREATE TABLE Subscriptions (
+    subscriber_id INT NOT NULL,  -- Khóa ngoại tham chiếu tới Users
+    channel_id INT NOT NULL,    -- Khóa ngoại tham chiếu tới Users
+    PRIMARY KEY (subscriber_id, channel_id),
+    FOREIGN KEY (subscriber_id) REFERENCES Users(UserID) ON DELETE CASCADE,  -- Khóa ngoại tham chiếu tới Users
+    FOREIGN KEY (channel_id) REFERENCES Users(UserID) ON DELETE CASCADE   -- Khóa ngoại tham chiếu tới Users
+) ENGINE=InnoDB;
+
+-- 5. Tạo bảng Video_Likes
+CREATE TABLE Video_Likes (
+    user_id INT NOT NULL,  -- Khóa ngoại tham chiếu tới Users
+    video_id INT NOT NULL, -- Khóa ngoại tham chiếu tới Video
+    like_status INT NULL,
+    PRIMARY KEY (user_id, video_id),
+    FOREIGN KEY (user_id) REFERENCES Users(UserID) ON DELETE CASCADE,  -- Khóa ngoại tham chiếu tới Users
+    FOREIGN KEY (video_id) REFERENCES Video(video_id) ON DELETE CASCADE  -- Khóa ngoại tham chiếu tới Video
+) ENGINE=InnoDB;
+
+-- 6. Tạo bảng watch_history
+CREATE TABLE watch_history (
+    history_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,  -- Khóa ngoại tham chiếu tới Users
+    video_id INT NOT NULL, -- Khóa ngoại tham chiếu tới Video
+    watch_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    duration_watched TIME DEFAULT '00:00:00',
+    FOREIGN KEY (user_id) REFERENCES Users(UserID) ON DELETE CASCADE, -- Khóa ngoại tham chiếu tới Users
+    FOREIGN KEY (video_id) REFERENCES Video(video_id) ON DELETE CASCADE -- Khóa ngoại tham chiếu tới Video
+) ENGINE=InnoDB;

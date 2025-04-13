@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Video của tôi</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <style>
+      body {
+        background-color: #181818;
+        color: #fff;
+        padding: 20px;
+        font-family: Arial, sans-serif;
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      a.back-link {
+        color: #ccc;
+        text-decoration: none;
+        margin-bottom: 20px;
+        display: inline-block;
+      }
+
+      ul {
+        list-style: none;
+        padding: 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+      }
+
+      li {
+        background-color: #222;
+        border-radius: 10px;
+        padding: 10px;
+      }
+
+      video {
+        width: 100%;
+        border-radius: 10px;
+      }
+
+      a.title {
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+        display: block;
+        margin-top: 10px;
+        font-size: 16px;
+      }
+
+      a.title:hover {
+        color: #ff0000;
+      }
+
+      p.views {
+        margin-top: 5px;
+        font-size: 14px;
+        color: #aaa;
+      }
+
+      form {
+        margin-top: 10px;
+      }
+
+      button {
+        background-color: #cc0000;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #ff0000;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Video của tôi</h1>
+    <a class="back-link" href="{{ url_for('index') }}">← Quay lại trang chủ</a>
+
+    {% if videos %}
+    <ul>
+      {% for video in videos %}
+      <li>
+        <video controls>
+          <source
+            src="{{ url_for('static', filename='videos/' + (video.converted_filename or video.filename)) }}"
+            type="video/mp4"
+          />
+          {% if video.subtitle_filename %}
+          <track
+            src="{{ url_for('static', filename='subtitles/' + video.subtitle_filename) }}"
+            kind="subtitles"
+            srclang="vi"
+            label="Tiếng Việt"
+            default
+          />
+          {% endif %} Trình duyệt không hỗ trợ video.
+        </video>
+        <a class="title" href="{{ url_for('watch', video_id=video.video_id) }}"
+          >{{ video.title }}</a
+        >
+        <p class="views">Lượt xem: {{ video.views }}</p>
+        <form
+          action="{{ url_for('delete_video', video_id=video.video_id) }}"
+          method="post"
+          onsubmit="return confirm('Bạn có chắc muốn xoá video này?')"
+        >
+          <button type="submit">🗑️ Xoá</button>
+        </form>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p>Bạn chưa đăng video nào.</p>
+    {% endif %}
+  </body>
+</html>

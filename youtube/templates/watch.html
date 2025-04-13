@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ video.title }}</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        padding: 0;
+        background-color: #f4f4f4;
+      }
+
+      h1 {
+        text-align: center;
+        color: #333;
+      }
+
+      video {
+        display: block;
+        margin: 20px auto;
+        border-radius: 10px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      p {
+        text-align: center;
+        font-size: 18px;
+      }
+
+      form {
+        text-align: center;
+        margin: 10px 0;
+      }
+
+      textarea {
+        width: 80%;
+        height: 60px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+      }
+
+      button {
+        padding: 10px 15px;
+        font-size: 16px;
+        color: white;
+        background-color: #007bff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 5px;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      .comments {
+        width: 80%;
+        margin: 20px auto;
+        padding: 10px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .comment {
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .comment:last-child {
+        border-bottom: none;
+      }
+
+      .comment strong {
+        color: #007bff;
+      }
+
+      .comment small {
+        color: #666;
+        font-size: 12px;
+      }
+
+      .comment p {
+        text-align: left;
+        font-size: 16px;
+        margin-top: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>{{ video.title }}</h1>
+
+    <!-- Hiển thị video -->
+    <video width="800" controls>
+      <source
+        src="{{ url_for('static', filename='videos/' + video.filename) }}"
+        type="video/mp4"
+      />
+      Trình duyệt của bạn không hỗ trợ video.
+    </video>
+
+    <p><strong>Lượt xem:</strong> {{ video.views }}</p>
+    <!-- Like & Dislike -->
+    <form
+      action="{{ url_for('like_video', video_id=video.video_id) }}"
+      method="post"
+    >
+      <button type="submit" name="like_status" value="1">👍 Thích</button>
+      <button type="submit" name="like_status" value="-1">
+        👎 Không thích
+      </button>
+    </form>
+    <p>👍 {{ video.likes }} | 👎 {{ video.dislikes }}</p>
+    <h2>Bình luận</h2>
+
+    <!-- Form nhập bình luận -->
+    {% if session['user'] %}
+    <form
+      action="{{ url_for('comment_video', video_id=video.video_id) }}"
+      method="POST"
+    >
+      <textarea
+        name="comment"
+        rows="3"
+        placeholder="Nhập bình luận..."
+        required
+      ></textarea>
+      <button type="submit">Gửi</button>
+    </form>
+    {% else %}
+    <p><a href="{{ url_for('login') }}">Đăng nhập</a> để bình luận.</p>
+    {% endif %}
+
+    <!-- Danh sách bình luận -->
+    <div class="comments">
+      {% for comment in comments %}
+      <div class="comment">
+        <strong>{{ comment.Email }}</strong> -
+        <small>{{ comment.created_at }}</small>
+        <p>{{ comment.comment_text }}</p>
+      </div>
+      {% else %}
+      <p>Chưa có bình luận nào.</p>
+      {% endfor %}
+    </div>
+
+    <p><a href="{{ url_for('index') }}">Quay lại trang chủ</a></p>
+  </body>
+</html>

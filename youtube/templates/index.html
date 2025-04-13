@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trang chủ</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+      }
+
+      body {
+        background-color: #181818;
+        color: #fff;
+        padding: 20px;
+      }
+
+      h1,
+      h2 {
+        text-align: center;
+        margin-bottom: 15px;
+      }
+
+      form {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+      }
+
+      input[type="text"] {
+        width: 400px;
+        padding: 10px;
+        border: none;
+        border-radius: 20px;
+        outline: none;
+      }
+
+      button {
+        padding: 10px 20px;
+        margin-left: 10px;
+        background-color: #cc0000;
+        color: white;
+        border: none;
+        border-radius: 20px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #ff0000;
+      }
+
+      ul {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 15px;
+        padding: 20px;
+        list-style: none;
+        justify-content: center;
+      }
+
+      li {
+        background: #222;
+        padding: 10px;
+        border-radius: 10px;
+        transition: transform 0.3s ease;
+      }
+
+      li:hover {
+        transform: scale(1.05);
+      }
+
+      video {
+        width: 100%;
+        height: auto;
+        border-radius: 10px;
+        cursor: pointer;
+      }
+
+      a {
+        text-decoration: none;
+        color: white;
+        font-weight: bold;
+        display: block;
+        margin-top: 10px;
+      }
+
+      a:hover {
+        color: #ff0000;
+      }
+
+      video:hover {
+        filter: brightness(0.8);
+      }
+
+      video::cue {
+        background: rgba(0, 0, 0, 0.7);
+        color: #fff;
+        font-size: 18px;
+        text-shadow: 1px 1px 2px black;
+        line-height: 1.4;
+        position: absolute;
+        bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Danh sách Video</h1>
+
+    <h2>Tìm kiếm Video</h2>
+    <form action="{{ url_for('search') }}" method="get">
+      <input
+        type="text"
+        name="query"
+        placeholder="Nhập tiêu đề video..."
+        value="{{ search_query or '' }}"
+        required
+      />
+      <button type="submit">Tìm kiếm</button>
+    </form>
+
+    {% if 'user' in session %}
+    <p>
+      Xin chào, <strong>{{ session['user']['email'] }}</strong>!
+      <a href="{{ url_for('logout') }}">[Đăng xuất]</a>
+    </p>
+
+    <p style="text-align: center; margin-bottom: 20px">
+      <a href="{{ url_for('my_videos') }}">
+        <button
+          style="
+            padding: 10px 20px;
+            background-color: #0066cc;
+            border: none;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+          "
+        >
+          Quản lý video của bạn
+        </button>
+      </a>
+    </p>
+    <p style="text-align: center; margin-bottom: 20px">
+      <a href="{{ url_for('history') }}">
+        <button
+          style="
+            padding: 10px 20px;
+            background-color: #28a745;
+            border: none;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+          "
+        >
+          Lịch sử xem
+        </button>
+      </a>
+    </p>
+    <h2>Tải lên video mới</h2>
+    <form
+      action="{{ url_for('upload_file') }}"
+      method="post"
+      enctype="multipart/form-data"
+    >
+      <input type="text" name="title" placeholder="Tiêu đề video" required />
+      <input type="text" name="description" placeholder="Mô tả" />
+      <input type="file" name="video" accept=".mp4,.mkv,.avi,.mov" required />
+      <button type="submit">Tải lên</button>
+    </form>
+    {% else %}
+    <p>
+      <a href="{{ url_for('login') }}">[Đăng nhập]</a> |
+      <a href="{{ url_for('register') }}">[Đăng ký]</a>
+    </p>
+    {% endif %}
+
+    <h2>Danh sách Video</h2>
+    {% if video_files %}
+    <ul>
+      {% for video in video_files %}
+      <li>
+        <a href="{{ url_for('watch', video_id=video.video_id) }}">
+          <video controls>
+            {% if video.converted_filename %}
+            <source
+              src="{{ url_for('static', filename='video/' + video.converted_filename) }}"
+              type="video/mp4"
+            />
+            {% else %}
+            <source
+              src="{{ url_for('static', filename='video/' + video.filename) }}"
+              type="video/mp4"
+            />
+            {% endif %} {% if video.subtitle_filename %}
+            <track
+              src="{{ url_for('static', filename='subtitles/' + video.subtitle_filename) }}"
+              kind="subtitles"
+              srclang="vi"
+              label="Tiếng Việt"
+              default
+            />
+            {% endif %} Trình duyệt không hỗ trợ video.
+          </video>
+          <br />
+          {{ video.title }} (Lượt xem: {{ video.views }})
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+    <div style="text-align: center; margin-top: 20px">
+      {% if page > 1 %}
+      <a href="{{ url_for('index', page=page-1) }}" style="margin-right: 10px"
+        >← Trang trước</a
+      >
+      {% endif %}
+      <span>Trang {{ page }} / {{ total_pages }}</span>
+      {% if page < total_pages %}
+      <a href="{{ url_for('index', page=page+1) }}" style="margin-left: 10px"
+        >Trang sau →</a
+      >
+      {% endif %}
+    </div>
+
+    {% else %}
+    <p>Chưa có video nào được tải lên.</p>
+    {% endif %}
+  </body>
+</html>
