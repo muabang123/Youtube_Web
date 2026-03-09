@@ -21,7 +21,7 @@ DB_CONFIG = {
     'username': os.getenv('DB_USER', ''),
     'password': os.getenv('DB_PASSWORD', '')
 }
-aai.settings.api_key = "93a78d0d160b4a35926d5a8881c54cf9"
+aai.settings.api_key = ""
 # Cấu hình API KEY cho AssemblyAI
 aai.settings.api_key = os.getenv('ASSEMBLYAI_API_KEY', '')
 
