@@ -16,24 +16,24 @@ app.config['ALLOWED_EXTENSIONS'] = {'mp4', 'mkv', 'avi', 'mov'}
 
 # Cấu hình kết nối SQL ServerUPLOAD_FOLDER
 DB_CONFIG = {
-    'host': '127.0.0.1',  # Địa chỉ host
-    'port': 3307,          # Cổng MySQL (3307)
-    'database': os.getenv('DB_NAME', 'youtube_db'),
-    'user': os.getenv('DB_USER', 'root'),
-    'password': os.getenv('DB_PASS', '')
+    'server': os.getenv('DB_SERVER', r'LAPTOP-24DU0Q4N\SQLEXPRESS'),
+    'database': os.getenv('DB_NAME', 'ytbdb'),
+    'username': os.getenv('DB_USER', 'minhmm'),
+    'password': os.getenv('DB_PASSWORD', '123')
 }
 aai.settings.api_key = "93a78d0d160b4a35926d5a8881c54cf9"
 # Cấu hình API KEY cho AssemblyAI
 aai.settings.api_key = os.getenv('ASSEMBLYAI_API_KEY', '93a78d0d160b4a35926d5a8881c54cf9')
 
 def get_db_connection():
-    return mysql.connector.connect(
-        host=DB_CONFIG['host'],
-        port=DB_CONFIG['port'],
-        database=DB_CONFIG['database'],
-        user=DB_CONFIG['user'],
-        password=DB_CONFIG['password']
+    conn_str = (
+        f"DRIVER={{ODBC Driver 17 for SQL Server}};"
+        f"SERVER={DB_CONFIG['server']};"
+        f"DATABASE={DB_CONFIG['database']};"
+        f"UID={DB_CONFIG['username']};"
+        f"PWD={DB_CONFIG['password']}"
     )
+    return pyodbc.connect(conn_str)
 
 def row_to_dict(cursor, row):
     if row is None:
